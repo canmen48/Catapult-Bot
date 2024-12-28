@@ -38,9 +38,36 @@ instance Eq Cell where
 -- ################## - 2 Functional Points                   ###################
 -- ################## - 1 Coverage Point                      ###################
 -- #############################################################################
-
+--AI was used to implement the splitOn function properly 
+splitOn :: Eq a => a -> [a] -> [[a]]
+splitOn _ [] = [[]]
+splitOn delim (x:xs)
+    | x == delim = [] : rest
+    | otherwise  = (x : head rest) : tail rest
+  where
+    rest = splitOn delim xs
+correctRow :: String -> Int -> Bool
+correctRow row x=
+    let validRow=map parseFENChar row
+    in all (>0) validRow && sum validRow==x
+--AI was used to create a function that will read the integers in a string as integers and to count letters in the parts
+parseFENChar :: Char -> Int
+parseFENChar c
+  | isDigit c = read [c]
+  | c `elem` "bBwWgG" = 1
+  | otherwise = 0
+handleEmpty :: String -> String
+handleEmpty "" = "0"  -- 
+handleEmpty row = row
 validateFEN :: String -> Bool
-validateFEN _ = True
+validateFEN str
+  | null str = False
+  | otherwise =
+      let parts = splitOn '/' str
+      in length parts == 10 && all ((`correctRow` 10) . handleEmpty) parts
+
+
+
 
 
 -- ##############################################################################
