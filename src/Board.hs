@@ -48,11 +48,11 @@ splitOn delim (x:xs)
     rest = splitOn delim xs
 correctRow :: String -> Int -> Bool
 correctRow row x=
-    let validRow=map parseFENChar row
+    let validRow=map divideFENChar row
     in all (>0) validRow && sum validRow==x
 --AI was used to create a function that will read the integers in a string as integers and to count letters in the parts
-parseFENChar :: Char -> Int
-parseFENChar c
+divideFENChar :: Char -> Int
+divideFENChar c
   | isDigit c = read [c]
   | c `elem` "bBwWgG" = 1
   | otherwise = 0
@@ -67,9 +67,6 @@ validateFEN str
       in length parts == 10 && all ((`correctRow` 10) . handleEmpty) parts
 
 
-
-
-
 -- ##############################################################################
 -- ################## IMPLEMENT buildBoard :: String -> Board ###################
 -- ################## - 2 Functional Points                   ###################
@@ -77,4 +74,21 @@ validateFEN str
 -- ##############################################################################
 
 buildBoard :: String -> Board
-buildBoard _ = []
+buildBoard board = map divideRow (splitOn '/' board)
+
+-- AI was used to create the recursion correctly
+divideRow :: String -> [Cell]
+divideRow [] = []
+divideRow (x:xs)
+  | isDigit x = replicate (digitToInt x) Empty ++ divideRow xs
+  | otherwise = charToCell x : divideRow xs
+
+-- Table for character to cell conversion
+charToCell :: Char -> Cell
+charToCell 'b' = Soldier Black
+charToCell 'B' = Flag Black
+charToCell 'w' = Soldier White
+charToCell 'W' = Flag White
+charToCell 'g' = General White
+charToCell 'G' = General Black
+charToCell _   = Empty 
