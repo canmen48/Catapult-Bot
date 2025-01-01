@@ -25,7 +25,36 @@ instance Eq Move where
 data Catapult = N | NE | E | SE | S | SW | W | NW deriving Show
 
 flagMoves :: Board -> Player -> [Move]
-flagMoves _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
+flagMoves board player
+  | hasFlag board player = []
+  | otherwise = possibleFlagMoves board player
+
+--Controls if the flag of the respective player is placed
+
+hasFlag :: Board -> Player -> Bool
+hasFlag board player = any ( elem (Flag player)) board
+
+--Generates possible flag moves for the player respectively
+
+possibleFlagMoves :: Board -> Player -> [Move]
+possibleFlagMoves board White = allMoves board White 9 ['b','c','d','e','f','g','h','i']
+possibleFlagMoves board Black = allMoves board Black 0 ['b','c','d','e','f','g','h','i']
+
+allMoves :: Board -> Player -> Int -> [Char] -> [Move]
+allMoves board player row columns =
+  [Move (Pos c row) (Pos c row) | c <- columns, isBlank board (Pos c row)]
+  --Function to control if a cell is empty
+isBlank :: Board -> Pos -> Bool
+isBlank board (Pos column1 row1)=
+  case getCell board (Pos column1 row1) of
+    Empty -> True
+    _  -> False
+  --Function to get the wanted cell 
+getCell :: Board -> Pos -> Cell
+--AI was used to correctly enumerate the char section
+getCell board (Pos col row)= (board !! row) !! (fromEnum col - fromEnum 'a')
+
+
 
 
 -- #################################################################################################
@@ -35,7 +64,27 @@ flagMoves _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
 -- #################################################################################################
 
 generalMoves :: Board -> Player -> Pos -> [Move]
-generalMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
+--generalMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
+generalMoves board player (Pos column row)=
+  [Move (Pos column row) (Pos colChar row1) 
+  | colNum <- [numericalColumn column - 1 .. numericalColumn column + 1],
+    row1 <- [row - 1 .. row + 1],
+    let colChar = numberToChar colNum,
+    isValidMove board (Pos colChar row1)]
+numericalColumn :: Char -> Int
+numericalColumn column =
+  fromEnum column - fromEnum 'a'
+numberToChar :: Int -> Char
+numberToChar number
+  | number < 0 || number > 9 = error"Out of Bounds"
+  | otherwise = toEnum (number + fromEnum 'a')
+--AI Helper function
+isValidMove :: Board -> Pos -> Bool
+isValidMove board (Pos col row)
+  | col < 'a' || col > 'j' = False 
+  | row < 0 || row >= length board = False 
+  | otherwise = isBlank board (Pos col row)
+
 
 
 -- #################################################################################################
