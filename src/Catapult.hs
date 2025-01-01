@@ -128,8 +128,14 @@ catapultMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
 -- #################################################################################################
 
 playerWon :: Board -> Player -> Bool
-playerWon _ _ = True
-
+--playerWon _ _ = True
+playerWon board player=
+  let opponent = if player == White then Black else White
+      --Testing all of the possibilites
+      hasOpponentFlag = any (elem (Flag opponent)) board
+      hasOpponentGeneral = any (elem (General opponent)) board
+      opponentHasMoves = not (null (listMoves board opponent))
+  in not (hasOpponentFlag && hasOpponentGeneral) || not opponentHasMoves
 
 -- #################################################################################################
 -- ################## IMPLEMENT listMoves :: Board -> Player -> [Move]           ###################
