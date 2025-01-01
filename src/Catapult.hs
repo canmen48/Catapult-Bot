@@ -52,7 +52,7 @@ isBlank board (Pos column1 row1)=
   --Function to get the wanted cell 
 getCell :: Board -> Pos -> Cell
 --AI was used to correctly enumerate the char section
-getCell board (Pos col row)= (board !! row) !! (fromEnum col - fromEnum 'a')
+getCell board (Pos col row)= (board !! row) !! (numericalColumn col)
 
 
 
@@ -64,27 +64,41 @@ getCell board (Pos col row)= (board !! row) !! (fromEnum col - fromEnum 'a')
 -- #################################################################################################
 
 generalMoves :: Board -> Player -> Pos -> [Move]
---generalMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
-generalMoves board player (Pos column row)=
-  [Move (Pos column row) (Pos colChar row1) 
-  | colNum <- [numericalColumn column - 1 .. numericalColumn column + 1],
-    row1 <- [row - 1 .. row + 1],
-    let colChar = numberToChar colNum,
-    isValidMove board (Pos colChar row1)]
+generalMoves board player (Pos column row)
+  -- AI was used to correctly keep the function in bounds
+  | not (isGeneral board player (Pos column row)) = []
+  | otherwise = 
+      [Move (Pos column row) (Pos colChar row1) 
+      | colNum <- [numericalColumn column - 1 .. numericalColumn column + 1],
+        row1 <- [row - 1 .. row + 1],
+        colNum >= 0, colNum <= 9, 
+        row1 >= 0, row1 <= 9, 
+        let colChar = numberToChar colNum,
+        isValidMove board (Pos colChar row1)]
+
+-- Control the general
+isGeneral :: Board -> Player -> Pos -> Bool
+isGeneral board player (Pos col row) =
+  case getCell board (Pos col row) of
+    General p -> p == player
+    _ -> False
+
+-- Original value to column number
 numericalColumn :: Char -> Int
-numericalColumn column =
-  fromEnum column - fromEnum 'a'
+numericalColumn column = fromEnum column - fromEnum 'a'
+
+-- Column number to original value
 numberToChar :: Int -> Char
 numberToChar number
-  | number < 0 || number > 9 = error"Out of Bounds"
+  | number < 0 || number > 9 = error "Out of Bounds"
   | otherwise = toEnum (number + fromEnum 'a')
---AI Helper function
+
+-- AI Helper function
 isValidMove :: Board -> Pos -> Bool
 isValidMove board (Pos col row)
   | col < 'a' || col > 'j' = False 
   | row < 0 || row >= length board = False 
   | otherwise = isBlank board (Pos col row)
-
 
 
 -- #################################################################################################
