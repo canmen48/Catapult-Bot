@@ -52,13 +52,8 @@ isBlank board (Pos column1 row1)=
     _  -> False
   --Function to get the wanted cell 
 getCell :: Board -> Pos -> Cell
---AI was used to correctly enumerate the char section and keep the function in bounds
-getCell board (Pos col row)
-    | row < 0 || row >= length board = Empty
-    | colIdx < 0 || colIdx >= length (head board) = Empty
-    | otherwise = (board !! row) !! colIdx
-  where
-    colIdx = numericalColumn col
+--AI was used to correctly enumerate the char section
+getCell board (Pos col row)= (board !! row) !! numericalColumn col
 numericalColumn :: Char -> Int
 numericalColumn column = fromEnum column - fromEnum 'a'
 
