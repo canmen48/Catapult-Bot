@@ -13,7 +13,7 @@ import Board
       Cell(Empty, Flag, Soldier, General),
       Pos(Pos))
 
-import Catapult (playerWon, flagMoves, soldierMoves, catapultMoves, listMoves)
+import Catapult (playerWon, flagMoves, soldierMoves, generalMoves, catapultMoves, listMoves)
 
 sampleBoard = [
                 [Empty          , Empty          , Empty          , Empty          , (Flag White)   , Empty          , Empty          , Empty          , Empty          , Empty          ],
@@ -68,7 +68,7 @@ testFlagMoves = describe "IF Validate-Module-Catapult: flagMoves ..." $ do
 testGeneralMoves:: Spec
 testGeneralMoves = describe "IF Validate-Module-Catapult: generalMoves ..." $ do
         it "wrong position" $ do
-            soldierMoves sampleBoard White (Pos 'a' 9) `shouldBe` []
+            generalMoves sampleBoard White (Pos 'a' 9) `shouldBe` []
 
 testSoldierMoves:: Spec
 testSoldierMoves = describe "IF Validate-Module-Catapult: soldierMoves ..." $ do
