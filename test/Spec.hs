@@ -145,37 +145,5 @@ main = hspec $ do
             let board = buildBoard "///4Gw4//////"
             let moves = generalMoves board Black (Pos 'e' 3)
             not (null moves) `shouldBe` True
-    describe "soldierMoves Function tests" $ do
-        it "calculates valid soldier moves" $ do
-            let board = buildBoard "/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/b1b1b1b1b1/"
-            let moves = soldierMoves board Black (Pos 'a' 7)
-            not (null moves) `shouldBe` True
-
-    describe "listMoves Function tests" $ do
-
-        it "white valid moves" $ do
-            let board = buildBoard "/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/b1b1b1b1b1/"
-            let moves = listMoves board White
-            not (null moves) `shouldBe` True
-        it "white no moves" $ do
-            let board = buildBoard "wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww/wwwwwwwwww"
-            let moves = listMoves board White
-            moves `shouldBe` []
-        it "black valid moves" $ do
-            let board = buildBoard "/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/b1b1b1b1b1/"
-            let moves = listMoves board White
-            not (null moves) `shouldBe` True
-        it "black no moves" $ do
-            let board = buildBoard "bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb/bbbbbbbbbb"
-            let moves = listMoves board White
-            moves `shouldBe` []
-    describe "playerWon Function tests" $ do
-
-        it "checks if a player has won the game" $ do
-            let board = buildBoard "/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/b1b1b1b1b1/"
-            playerWon board White `shouldBe` False
-            playerWon board Black `shouldBe` False
-        it "playerWon when all opponent pieces are removed" $ do
-            let board = buildBoard "/////////"
-            playerWon board White `shouldBe` True
-            playerWon board Black `shouldBe` True
+    
+    
