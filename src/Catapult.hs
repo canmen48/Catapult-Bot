@@ -6,7 +6,7 @@ module Catapult where  -- do NOT CHANGE export of module
 import Board
 import Data.Char
 import Data.Maybe
-
+import Debug.Trace
 data Move = Move {start :: Pos, target :: Pos}
 
 instance Show Move where
@@ -34,6 +34,7 @@ flagMoves board player
 hasFlag :: Board -> Player -> Bool
 hasFlag board player = any ( elem (Flag player)) board
 
+
 --Generates possible flag moves for the player respectively
 
 possibleFlagMoves :: Board -> Player -> [Move]
@@ -52,7 +53,9 @@ isBlank board (Pos column1 row1)=
   --Function to get the wanted cell 
 getCell :: Board -> Pos -> Cell
 --AI was used to correctly enumerate the char section
-getCell board (Pos col row)= (board !! row) !! (numericalColumn col)
+getCell board (Pos col row)= (board !! row) !! numericalColumn col
+numericalColumn :: Char -> Int
+numericalColumn column = fromEnum column - fromEnum 'a'
 
 
 
@@ -67,14 +70,17 @@ generalMoves :: Board -> Player -> Pos -> [Move]
 generalMoves board player (Pos column row)
   -- AI was used to correctly keep the function in bounds
   | not (isGeneral board player (Pos column row)) = []
-  | otherwise = 
-      [Move (Pos column row) (Pos colChar row1) 
-      | colNum <- [numericalColumn column - 1 .. numericalColumn column + 1],
-        row1 <- [row - 1 .. row + 1],
-        colNum >= 0, colNum <= 9, 
-        row1 >= 0, row1 <= 9, 
-        let colChar = numberToChar colNum,
-        isValidMove board (Pos colChar row1)]
+  | otherwise =
+      [Move (Pos column row) (Pos colChar row1) |
+         colNum <- [numericalColumn column - 1 .. numericalColumn column
+                                                    + 1],
+         colNum >= 0,
+         colNum <= 9,
+         row1 <- [row - 1 .. row + 1],
+         row1 >= 0,
+         row1 <= 9,
+         let colChar = numberToChar colNum,
+         isValidMove board (Pos colChar row1)]
 
 -- Control the general
 isGeneral :: Board -> Player -> Pos -> Bool
@@ -83,22 +89,13 @@ isGeneral board player (Pos col row) =
     General p -> p == player
     _ -> False
 
--- Original value to column number
-numericalColumn :: Char -> Int
-numericalColumn column = fromEnum column - fromEnum 'a'
-
 -- Column number to original value
 numberToChar :: Int -> Char
-numberToChar number
-  | number < 0 || number > 9 = error "Out of Bounds"
-  | otherwise = toEnum (number + fromEnum 'a')
+numberToChar number= toEnum (number + fromEnum 'a')
 
 -- AI Helper function
 isValidMove :: Board -> Pos -> Bool
-isValidMove board (Pos col row)
-  | col < 'a' || col > 'j' = False 
-  | row < 0 || row >= length board = False 
-  | otherwise = isBlank board (Pos col row)
+isValidMove board (Pos col row) = isBlank board (Pos col row)
 
 
 -- #################################################################################################
@@ -108,9 +105,7 @@ isValidMove board (Pos col row)
 -- #################################################################################################
 
 soldierMoves :: Board -> Player -> Pos -> [Move]
-soldierMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
-
-
+soldierMoves board player (Pos col row)=[]
 -- #################################################################################################
 -- ################## IMPLEMENT catapultMoves :: Board -> Player -> Pos -> [Move]  ###################
 -- ################## - 4 Functional Points                                      ###################
@@ -118,7 +113,8 @@ soldierMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
 -- #################################################################################################
 
 catapultMoves :: Board -> Player -> Pos -> [Move]
-catapultMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
+catapultMoves board player (Pos col row)=[]
+  
 
 
 -- #################################################################################################
@@ -128,10 +124,9 @@ catapultMoves _ _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
 -- #################################################################################################
 
 playerWon :: Board -> Player -> Bool
---playerWon _ _ = True
 playerWon board player=
   let opponent = if player == White then Black else White
-      --Testing all of the possibilites
+      --Testing all of the possibilities
       hasOpponentFlag = any (elem (Flag opponent)) board
       hasOpponentGeneral = any (elem (General opponent)) board
       opponentHasMoves = not (null (listMoves board opponent))
@@ -144,5 +139,4 @@ playerWon board player=
 -- #################################################################################################
 
 listMoves :: Board -> Player -> [Move]
-listMoves _ _ = [(Move (Pos 'a' 9) (Pos 'a' 9))]
-
+listMoves board player =[]
