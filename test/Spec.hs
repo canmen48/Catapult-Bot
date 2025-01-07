@@ -137,6 +137,22 @@ main = hspec $ do
             let board = buildBoard "/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//3w6"
             let moves = soldierMoves board White (Pos 'd' 9)
             not (null moves) `shouldBe` True
+        it "calculates white soldier moves lower right corner" $ do
+            let board = buildBoard "9w/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//w9"
+            let moves = soldierMoves board White (Pos 'j' 0)
+            not (null moves) `shouldBe` True
+        it "calculates white soldier moves lower left corner" $ do
+            let board = buildBoard "w9/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//w9"
+            let moves = soldierMoves board White (Pos 'a' 0)
+            not (null moves) `shouldBe` True
+        it "calculates white soldier moves upper right corner" $ do
+            let board = buildBoard "9b/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//9w"
+            let moves = soldierMoves board White (Pos 'j' 9)
+            not (null moves) `shouldBe` True
+        it "calculates white soldier moves upper left corner" $ do
+            let board = buildBoard "b9/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//w9"
+            let moves = soldierMoves board White (Pos 'a' 9)
+            not (null moves) `shouldBe` True
         it "calculates invalid white soldier moves corner" $ do
             let board = buildBoard "gwwwwwwwww/ww1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/wwwwwwwwww/wwwwwwwwww"
             let moves = soldierMoves board White (Pos 'j' 9)
@@ -157,16 +173,32 @@ main = hspec $ do
             let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/b1b1b1b1b1/"
             let moves = soldierMoves board White (Pos 'a' 0)
             not (null moves) `shouldBe` False
-        it "white soldier can takeout and can escape from every way" $ do --New tests begin here
+        it "white soldier can takeout and can escape from every way" $ do 
             let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
             let moves = soldierMoves board White (Pos 'e' 6)
             not (null moves) `shouldBe` True
+        it "white invalid position (negative)" $ do --New tests begin here
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board White (Pos 'e' 2)
+            not (null moves) `shouldBe` False
+        it "white invalid position (more than 9)" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board White (Pos 'e' 10)
+            not (null moves) `shouldBe` False
+        it "white invalid column letter" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board White (Pos 't' 5)
+            not (null moves) `shouldBe` False
+        it "white both column row invalid" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board White (Pos 't' 19)
+            not (null moves) `shouldBe` False
         it "white soldier can takeout and can escape from diagonals way" $ do 
-            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5/4w5/4w5/4w5"
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/3bGb4/4w5/4w5/4w5/4w5"
             let moves = soldierMoves board White (Pos 'e' 6)
             not (null moves) `shouldBe` True
         it "white soldier can takeout and can escape from just straight way" $ do 
-            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5/bbbb1bbbbb/bbbb1bbbbb/bbbb1bbbbb"
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/bbbb1bbbbb/4w5/bbbb1bbbbb/bbbb1bbbbb/bbbb1bbbbb"
             let moves = soldierMoves board White (Pos 'e' 6)
             not (null moves) `shouldBe` True
         it "white soldier can takeout cant escape (not enough spaces)" $ do
@@ -188,6 +220,22 @@ main = hspec $ do
         it "calculates valid black soldier moves" $ do
             let board = buildBoard "1b8//1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//3b6"
             let moves = soldierMoves board Black (Pos 'd' 9)
+            not (null moves) `shouldBe` True
+        it "calculates black soldier moves lower right corner" $ do
+            let board = buildBoard "9b/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//w9"
+            let moves = soldierMoves board Black (Pos 'j' 0)
+            not (null moves) `shouldBe` True
+        it "calculates black soldier moves lower left corner" $ do
+            let board = buildBoard "b9/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//w9"
+            let moves = soldierMoves board Black (Pos 'a' 0)
+            not (null moves) `shouldBe` True
+        it "calculates black soldier moves upper right corner" $ do
+            let board = buildBoard "9b/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//9b"
+            let moves = soldierMoves board Black (Pos 'j' 9)
+            not (null moves) `shouldBe` True
+        it "calculates black soldier moves upper left corner" $ do
+            let board = buildBoard "b9/1w1w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1//b9"
+            let moves = soldierMoves board Black (Pos 'a' 9)
             not (null moves) `shouldBe` True
         it "calculates invalid black soldier moves corner" $ do
             let board = buildBoard "bbbbbbbbbb/bbbbbbbbbb/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/b1b1b1b1b1/b1b1b1b1b1/wwwwwwwwww/wwwwwwwwww"
@@ -237,4 +285,57 @@ main = hspec $ do
             let board = buildBoard "/bbbbbbbbbb/bbbbbbbbbb/4b5/wwwwwwwwww/4G5/4w5///"
             let moves = soldierMoves board Black (Pos 'e' 3)
             not (null moves) `shouldBe` True
-    
+        it "black invalid position (negative)" $ do --New tests begin here
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board Black (Pos 'e' 2)
+            not (null moves) `shouldBe` False
+        it "black invalid position (more than 9)" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board Black (Pos 'e' 10)
+            not (null moves) `shouldBe` False
+        it "black invalid column letter" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board Black (Pos 't' 5)
+            not (null moves) `shouldBe` False
+        it "black both column row invalid" $ do 
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            let moves = soldierMoves board Black (Pos 't' 19)
+            not (null moves) `shouldBe` False
+
+    describe "playerWon Function tests" $ do
+        it "returns False when both players still have their general and flag, and moves are available" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            playerWon board White `shouldBe` False
+            playerWon board Black `shouldBe` False
+
+        it "returns True when the opponent has no flag" $ do
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            playerWon board White `shouldBe` True
+            playerWon board Black `shouldBe` False
+
+        it "returns True when the opponent has no general" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4//4w5///1W8"
+            playerWon board White `shouldBe` True
+            playerWon board Black `shouldBe` False
+
+        it "returns True when the opponent has no valid moves" $ do
+            let board = buildBoard "1B8/1w8/wwwwwwwwww/wwwwgwwwww/wwwwGwwwww/wwwwwwwwww////1W8"
+            playerWon board White `shouldBe` True
+            playerWon board Black `shouldBe` False
+
+        it "returns True when the opponent has no flag" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
+            playerWon board White `shouldBe` False
+            playerWon board Black `shouldBe` True
+
+        it "returns True when the opponent has no general" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5G4//4w5///1W8"
+            playerWon board White `shouldBe` False
+            playerWon board Black `shouldBe` True
+
+        it "returns True when the opponent has no valid moves" $ do
+            let board = buildBoard "1B8/bbbbbbbbbb/bbbbgbbbbb/bbbbbbbbbb//4G5////1W8"
+            playerWon board White `shouldBe` False
+            playerWon board Black `shouldBe` True
+
+        
