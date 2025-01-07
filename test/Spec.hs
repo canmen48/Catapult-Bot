@@ -11,7 +11,7 @@ import Board
       Cell(Empty, Flag, Soldier, General),
       Pos(Pos))
 
-import Catapult (Move(Move), playerWon, flagMoves, generalMoves, soldierMoves, catapultMoves, listMoves)
+import Catapult (Move(Move), playerWon, flagMoves, generalMoves, soldierMoves, catapultMoves, listMoves, isValidMove, retreatMovesBackwards)
 
 main :: IO ()
 main = hspec $ do
@@ -301,7 +301,19 @@ main = hspec $ do
             let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///"
             let moves = soldierMoves board Black (Pos 't' 19)
             not (null moves) `shouldBe` False
-
+    describe "catapultMoves Function tests" $ do
+        it "calculates invalid catapult shift moves (no space)"  $ do
+            let board = buildBoard "2b7/2b7/2b7///////1W8"
+            let moves = catapultMoves board Black (Pos 'c' 2)
+            not (null moves) `shouldBe` False
+        it "calculates valid catapult shift moves" $ do
+            let board = buildBoard "/2b7/3bG5/4b5//////1W8"
+            let moves = catapultMoves board Black (Pos 'c' 1)
+            not (null moves) `shouldBe` True
+        it "calculates valid catapult shoot and shift moves" $ do
+            let board = buildBoard "/2b7/3bG5/4b5//6w3/2w7///1W8"
+            let moves = catapultMoves board Black (Pos 'c' 1)
+            not (null moves) `shouldBe` True
     describe "playerWon Function tests" $ do
         it "returns False when both players still have their general and flag, and moves are available" $ do
             let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
@@ -338,4 +350,57 @@ main = hspec $ do
             playerWon board White `shouldBe` False
             playerWon board Black `shouldBe` True
 
-        
+    describe "listMoves Function tests" $ do
+        --Some tests here in listMoves functions are created by AI and some of them are modified by it
+        it "returns all valid moves for White when both players have their generals, flags, and valid moves" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            let moves = listMoves board White
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns all valid moves for Black when both players have their generals, flags, and valid moves" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            let moves = listMoves board Black
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns all valid moves for White when Black has no flag" $ do
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            let moves = listMoves board White
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns all valid moves for Black when Black has no flag" $ do
+            let board = buildBoard "/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5g4/4G5/4w5///1W8"
+            let moves = listMoves board Black
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns all valid moves for Black when White has no general" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5G4//4w5///1W8"
+            let moves = listMoves board Black
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns all valid moves for White when White has no general" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5G4//4w5///1W8"
+            let moves = listMoves board White
+            not (null moves) `shouldBe` True -- Ensure moves exist
+            
+
+        it "returns only flag and general moves for both players when there are no soldiers" $ do
+            let board = buildBoard "/3g6/3b6////3G6/3W6///"
+            let whiteMoves = listMoves board White
+            let blackMoves = listMoves board Black
+            not (null whiteMoves) `shouldBe` True -- Ensure White has moves
+            not (null blackMoves) `shouldBe` True -- Ensure Black has moves
+    describe "Helper functions test" $ do
+        it "invalid input on isValidMove function" $ do
+            let board = buildBoard "1B8/3w1w1w1w/1w1w1w1w1w/1w1w1w1w1w/5G4//4w5///1W8"
+            let moves = listMoves board White
+            isValidMove board (Pos 't' 5) `shouldBe` False 
+
+        it "retreatMovesBackwards test" $ do 
+            let board = buildBoard "4b5/4b5/4b5/4b5/wwwwwwwwww/4G5/4w5///"
+            let moves = soldierMoves board Black (Pos 'e' 3)
+            not (null moves) `shouldBe` True
