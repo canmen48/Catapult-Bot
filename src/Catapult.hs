@@ -57,7 +57,7 @@ getCell :: Board -> Pos -> Cell
 getCell board (Pos col row)
   | row < 0 || row >= length board = Empty  -- Check if the row index is out of bounds
   | colIdx < 0 || colIdx >= length (head board) = Empty  -- Check if the column index is out of bounds
-  | otherwise = (board !! row) !! colIdx
+  | otherwise = (board !! (9-row)) !! colIdx
   where
     colIdx = numericalColumn col
 

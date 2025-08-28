@@ -1,0 +1,16 @@
+# Haskell / Stack / Cabal
+.stack-work/
+dist/
+dist-newstyle/
+*.hi
+*.o
+*.tix
+*.prof
+*.hp
+*.eventlog
+
+# Editors/OS
+.DS_Store
+*.swp
+.idea/
+.vscode/

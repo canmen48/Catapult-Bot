@@ -42,7 +42,7 @@ instance Eq Cell where
 
 validateFEN :: String -> Bool
 validateFEN str
-  | null str = False
+  | str =="" =False
   | otherwise =
       let parts = splitOn '/' str
       in length parts == 10 && all ((`correctRow` 10) . handleEmpty) parts
